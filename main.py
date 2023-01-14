@@ -21,7 +21,14 @@ class Sistema:
         self.projetos.append(proj)
     
     def removerprojetos(self):
-        pass
+        list = []
+        for i in self.projetos:
+            list.append(i.nome)
+        p = input(f'Escolha o projeto que quer remover: {" | ".join(list)}\n')
+        if p in list:
+            self.projetos.pop(list.index(p))
+        else:
+            print('Entrada inválida')
 
     def criar_consultor(self):
         pass
@@ -46,15 +53,15 @@ class Sistema:
 
             case 'projetos':
                 list = []
-                for i in range(len(list)+1):
-                    list.append(self.projetos[i].nome)
+                for i in self.projetos:
+                    list.append(i.nome)
                 p = input(f'Escolha o projeto que quer ver: {" | ".join(list)}\n')
                 if p in list:
                     obj = self.projetos[list.index(p)]
                     print(obj)
                 else:
                     print('Entrada inválida')
-                    
+
             case _:
                 print('Entrada inválida')
 
@@ -80,9 +87,9 @@ sis.welcome()
 escolha = ''
 logado = False
 while escolha.lower().strip() != 'sair':
-    if sis.usuario_atual == 'Consultor':
+    if sis.usuario_atual.tipo == 'Consultor':
         escolha = input('Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Sair\n' + opcoes_comuns + opcoes_consultor)
-    elif sis.usuario_atual == 'Gerente':
+    elif sis.usuario_atual.tipo == 'Gerente':
         escolha = input('Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Sair\n' + opcoes_comuns + opcoes_gerente)
     else:
         escolha = input('Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Sair\n')
@@ -91,7 +98,7 @@ while escolha.lower().strip() != 'sair':
         case 'criarprojeto':
             sis.criarprojetos()
         case 'removerprojeto':
-            pass
+            sis.removerprojetos()
         case 'criarconsultor':
             pass
         case 'removerconsultor':

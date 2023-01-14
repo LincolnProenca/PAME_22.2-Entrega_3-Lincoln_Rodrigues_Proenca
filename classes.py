@@ -44,7 +44,7 @@ class Consultor(usuario_base):
         self.tipo = 'Consultor'
         pass
 
-class Gerente:
+class Gerente(usuario_base):
     def __init__(self,nome,user,senha):
         super.__init__(nome,user,senha)
         self.id = idG
