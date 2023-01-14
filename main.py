@@ -5,15 +5,22 @@ class Sistema:
         self.gerentes = []
         self.consultores = []
         self.projetos = []
+        self.usuario_atual = None #acessível apenas após login, portanto não precisa ser trancado
 
     def welcome(self):
-        print('Bem vindo ao sistema de ornaginzação e planejamento')
+        print('Bem vindo ao sistema de ornaginzação e planejamento \n')
 
     """ Funções para usuário não logado """
-    def criar_projetos(self):
-        pass
+    def criarprojetos(self):
+        nome_proj = input('Insira o nome do projeto: ')
+        coor_proj = input('Insira a coordenação do projeto: ')
+        etp_proj = int(input('Insira a etapa do projeto (0-15): '))
+        cst_proj = input('Insira o nome do consultor do projeto: ')
+        grt_proj = input('Insira o nome do gerente do projeto: ')
+        proj = Projeto(nome_proj, coor_proj, etp_proj,cst_proj,grt_proj)
+        self.projetos.append(proj)
     
-    def remover_projetos(self):
+    def removerprojetos(self):
         pass
 
     def criar_consultor(self):
@@ -30,15 +37,31 @@ class Sistema:
 
     def listar(self):
         resp = input('O que você deseja listar?\n Gerentes | Consultores | Projetos\n')
-        match resp:
-            case 'Gerentes':
+        match resp.lower().strip():
+            case 'gerentes':
                 pass
-            case 'Consultores':
+
+            case 'consultores':
                 pass
-            case 'Projetos':
-                pass
+
+            case 'projetos':
+                list = []
+                for i in range(len(list)+1):
+                    list.append(self.projetos[i].nome)
+                p = input(f'Escolha o projeto que quer ver: {" | ".join(list)}\n')
+                if p in list:
+                    obj = self.projetos[list.index(p)]
+                    print(obj)
+                else:
+                    print('Entrada inválida')
+                    
             case _:
                 print('Entrada inválida')
+
+    def  logar(self):
+        """ procurar na lista pelo nome do usuário e ver se a senha bate """
+        """ após isso alocar em uma variável o objeto e liberar as opções novas para consultor e gerente"""
+        pass
 
     """ Funções para usuário logado """
     """ Gerais """
@@ -52,18 +75,21 @@ class Sistema:
         pass
 
 
-            
-
-
 sis = Sistema()
 sis.welcome()
 escolha = ''
-while escolha.tolower() != 'sair':
-    escolha = input('Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Sair\n ')
+logado = False
+while escolha.lower().strip() != 'sair':
+    if sis.usuario_atual == 'Consultor':
+        escolha = input('Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Sair\n' + opcoes_comuns + opcoes_consultor)
+    elif sis.usuario_atual == 'Gerente':
+        escolha = input('Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Sair\n' + opcoes_comuns + opcoes_gerente)
+    else:
+        escolha = input('Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Sair\n')
     
-    match escolha.replace(' ', '').tolower():
+    match escolha.replace(' ', '').lower():
         case 'criarprojeto':
-            pass
+            sis.criarprojetos()
         case 'removerprojeto':
             pass
         case 'criarconsultor':
@@ -75,8 +101,9 @@ while escolha.tolower() != 'sair':
         case 'removergerente':
             pass
         case 'listar':
-            pass
+            sis.listar()
         case 'sair':
             escolha = 'sair'
+            print('Adeus!')
         case _:
             print('Entrada inválida')
