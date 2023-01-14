@@ -2,10 +2,10 @@ from classes import *
 
 class Sistema:
     def __init__(self):
-        self.gerentes = []
-        self.consultores = []
-        self.projetos = []
-        self.usuario_atual = None #acessível apenas após login, portanto não precisa ser trancado
+        self.gerentes = []  # Lista com todos os gerentes criados
+        self.consultores = []  # Lista com todos os consultores criados
+        self.projetos = []  # Lista com todos os projetos criados
+        self.usuario_atual = None #acessível apenas após login, portanto não precisa ser trancado (a ideia é que, ao fazer login o objeto referente ao usuario logado fique aqui e todas as alterações sejam feitas por aqui e depois salvas no objeto original)
 
     def welcome(self):
         print('Bem vindo ao sistema de ornaginzação e planejamento \n')
@@ -67,7 +67,7 @@ class Sistema:
 
     def  logar(self):
         """ procurar na lista pelo nome do usuário e ver se a senha bate """
-        """ após isso alocar em uma variável o objeto e liberar as opções novas para consultor e gerente"""
+        """ após isso alocar em uma variável(self.usurario_atual) o objeto e liberar as opções novas para consultor e gerente"""
         pass
 
     """ Funções para usuário logado """

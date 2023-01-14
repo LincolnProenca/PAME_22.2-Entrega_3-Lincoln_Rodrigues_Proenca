@@ -10,7 +10,7 @@ class usuario_base:
         self.nome = nome
         self.__usuario = user
         self.__senha = senha
-        self.projetos = []
+        self.projetos = [] #projetos alocados
 
     @property
     def nome(self):
@@ -39,7 +39,7 @@ class usuario_base:
 class Consultor(usuario_base):
     def __init__(self,nome,user,senha):
         super.__init__(nome,user,senha)
-        self.id = idC
+        self.id = idC #garantindo id unico
         idc += 1
         self.tipo = 'Consultor'
         pass
@@ -47,7 +47,7 @@ class Consultor(usuario_base):
 class Gerente(usuario_base):
     def __init__(self,nome,user,senha):
         super.__init__(nome,user,senha)
-        self.id = idG
+        self.id = idG #garantindo id unico
         idc += 1
         self.tipo = 'Gerente'
         pass
@@ -60,7 +60,7 @@ class Projeto:
         self.nome_consultor = consultor
         self.nome_gerente = gerente
 
-    def __str__(self):
+    def __str__(self): # Customizando a string da classe para fazer um print detalhado na lista
         return f'''
         Projeto {self.nome} , Etapa : {self.etapa}/15
 
