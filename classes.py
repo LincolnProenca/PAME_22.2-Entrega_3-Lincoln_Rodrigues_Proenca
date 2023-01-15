@@ -1,6 +1,6 @@
 Id = 0
 opcoes_basicas = 'Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Fazer Login | Sair\n'
-opcoes_comuns = 'Verificar projetos Alocados | Ver nome | Alterar Nome | Ver usuário | Alterar nome de usuário | Alterar senha | Trocar usuário\n'
+opcoes_comuns = 'Verificar projetos alocados | Ver nome | Alterar Nome | Ver usuário | Alterar nome de usuário | Alterar senha | Trocar usuário\n'
 opcoes_consultor = 'Requisitar Avanço de etapa | Pedir retirada do projeto\n'
 opcoes_gerente = 'Gerenciar pedidos de avanço | Gerenciar pedidos de retirada | Passar o projeto a outro gerente | Entregar um projeto | Gerenciar alocação em projetos\n'
 
@@ -72,6 +72,7 @@ class Projeto:
         self.etapa = etapa #15 total
         self.nome_consultor = consultor
         self.nome_gerente = gerente
+        self.status = 'Em andamento'
         global Id
         self.__id = Id # Garantindo ID unico
         Id += 1
@@ -87,4 +88,5 @@ class Projeto:
         Coordenação: {self.coordenacao}
         Consultor: {self.nome_consultor}
         Gerente: {self.nome_gerente}
+        Status: {self.status}
         '''
