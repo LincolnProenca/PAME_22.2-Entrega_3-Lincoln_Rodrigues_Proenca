@@ -1,9 +1,5 @@
 from classes import *
 
-""" 
-mudar nome no projeto quando mudar nome do usuario
- """
-
 class Sistema:
     def __init__(self):
         self.gerentes = []  # Lista com todos os gerentes criados
@@ -19,7 +15,11 @@ class Sistema:
     def criarprojetos(self):
         nome_proj = input('Insira o nome do projeto: ')
         coor_proj = input('Insira a coordenação do projeto: ')
-        etp_proj = int(input('Insira a etapa do projeto (0-15): '))
+        try:
+            etp_proj = int(input('Insira a etapa do projeto (0-15): '))
+        except:
+            print('\nO valor da etapa deve ser um inteiro entre 0 e 15! Tente novamente')
+            return
         cst_proj = input('Insira o nome do consultor do projeto: ')
         grt_proj = input('Insira o nome do gerente do projeto: ')
         proj = Projeto(nome_proj, coor_proj, etp_proj,'','')
@@ -28,25 +28,27 @@ class Sistema:
             if i.nome.replace(' ', '').lower() == cst_proj.replace(' ', '').lower():
                 i.projetos.append(proj)
                 proj.nome_consultor = i.nome
-            else:
+                break
+            elif i == self.consultores[len(self.consultores)-1]:
                 print('\nConsultor não encontrado! Entre como o gerente do projeto para alocar um consultor\n')
         for i in self.gerentes:
             if i.nome.replace(' ', '').lower() == grt_proj.replace(' ', '').lower():
                 i.projetos.append(proj)
                 proj.nome_gerente = i.nome
-            else:
+                break
+            elif i == self.gerentes[len(self.gerentes)-1]:
                 print('\nGerente não encontrado! Entre como um gerente para alocar-se ao projeto\n')
         """ Adicionando projeto ao sistema """
         self.projetos.append(proj)
         
     def removerprojetos(self):
         list = []
-        for i in self.projetos:
+        for i in self.projetos: # Gerando lista de projetos
             list.append(i.nome)
         p = input(f'Escolha o projeto que quer remover: {" | ".join(list)}\n')
         for i in range(len(list)):
             list[i] = list[i].replace(' ', '').lower()
-        if p.replace(' ', '').lower() in list:
+        if p.replace(' ', '').lower() in list: # Comparando a resposta com a lista
             nome = self.projetos[list.index(p.replace(' ', '').lower())].nome
             print(f'Removido {nome}')
             self.projetos.pop(list.index(p.replace(' ', '').lower()))
@@ -54,17 +56,17 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
 
-    def definir_senha(self):
+    def definir_senha(self): # Função para criar senhas
         senha1 = 1
         senha2 = 2
-        while senha1 != senha2:
+        while senha1 != senha2: # Loop para garantir que as senhas sejam iguais
             senha1 = input('Insira a senha de login: ')
             senha2 = input('Confirme a senha: ')
             if senha1 != senha2:
                 print('As senhas não são iguais. Tente novamente.')
         return senha1
 
-    def criar_consultor(self):
+    def criar_consultor(self): # Função para criar consultor
         nome_con = input('Insira o nome do consultor: ')
         user_con = input('Insira o usuário de login: ')
         lista = self.consultores + self.gerentes
@@ -76,7 +78,7 @@ class Sistema:
         con = Consultor(nome_con, user_con,senha)
         self.consultores.append(con)
 
-    def remover_consultor(self):
+    def remover_consultor(self): # Função para remover consultor
         list = []
         for i in self.consultores:
             list.append(i.nome)
@@ -90,7 +92,7 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
 
-    def criar_gerente(self):
+    def criar_gerente(self): # Função para criar gerente
         nome_ger = input('Insira o nome do gerente: ')
         user_ger = input('Insira o usuário de login: ')
         lista = self.consultores + self.gerentes
@@ -102,7 +104,7 @@ class Sistema:
         ger = Gerente(nome_ger, user_ger,senha)
         self.gerentes.append(ger)
 
-    def remover_gerente(self):
+    def remover_gerente(self): # Função para remover gerente
         list = []
         for i in self.gerentes:
             list.append(i.nome)
@@ -119,10 +121,10 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
 
-    def listar(self):
+    def listar(self): # Função para listar os diferentes tipos de objetos
         resp = input('O que você deseja listar?\n Gerentes | Consultores | Projetos\n')
         match resp.lower().strip():
-            case 'gerentes':
+            case 'gerentes': # Parte para listar gerentes
                 list = []
                 for i in self.gerentes:
                     list.append(i.nome)
@@ -150,7 +152,7 @@ class Sistema:
                 else:
                     print('\nEntrada inválida\n')
 
-            case 'consultores':
+            case 'consultores': # Parte para listar consultores
                 list = []
                 for i in self.consultores:
                     list.append(i.nome)
@@ -178,7 +180,7 @@ class Sistema:
                 else:
                     print('\nEntrada inválida\n')
 
-            case 'projetos':
+            case 'projetos': # Parte para listar projetos
                 list = []
                 for i in self.projetos + self.projetos_finalizados:
                     list.append(i.nome)
@@ -201,8 +203,6 @@ class Sistema:
                 print('\nEntrada inválida\n')
 
     def  logar(self):
-        """ procurar na lista pelo nome do usuário e ver se a senha bate """
-        """ após isso alocar em uma variável(self.usurario_atual) o objeto e liberar as opções novas para consultor e gerente"""
         c = input('Escolha como quer logar: Consultor | Gerente\n')
         if c.lower() == 'consultor':
             lista = self.consultores
@@ -227,7 +227,7 @@ class Sistema:
 
     """ Funções para usuário logado """
     """ Gerais """
-    def ver_usuario(self):
+    def ver_usuario(self): # Função para verificar todas as informações do usuário
         list = []
         for i in self.usuario_atual.projetos:
             list.append(i.nome)
@@ -244,7 +244,7 @@ class Sistema:
         Id: {self.usuario_atual.id}
         ''')    
 
-    def alterar_nome_usuario(self):
+    def alterar_nome_usuario(self): # Função para alterar o nome
         nome = input('Insira o novo nome: ')
         self.usuario_atual.nome = nome
         if self.usuario_atual.projetos != []:
@@ -258,7 +258,7 @@ class Sistema:
         self.update_usuario()
         
 
-    def alterar_nome_usuario_login(self):
+    def alterar_nome_usuario_login(self): # Função para alterar nome de login do usuario
         nome = input('Insira o novo nome de usuário: ')
         lista = self.consultores + self.gerentes
         for i in lista:
@@ -271,18 +271,18 @@ class Sistema:
         self.usuario_atual.nome = nome
         self.update_usuario()
 
-    def alterar_senha_usuario(self):
+    def alterar_senha_usuario(self): # Função para alterar a senha do usuario
         senha = input('Insira a nova senha: ')
         self.usuario_atual.senha = senha
         self.update_usuario()
 
-    def trocar_usuario(self):
+    def trocar_usuario(self): # Função para alternar entre usuários
         print('Logout efetuado!\n')
         self.update_usuario()
         self.usuario_atual = usuario_base('None','None','None')
         self.logar()
 
-    def update_usuario(self):
+    def update_usuario(self): # Função para atualizar as informações do usuário
         list = []
         lista = []
         if self.usuario_atual.tipo == 'Consultor':
@@ -298,7 +298,7 @@ class Sistema:
             self.gerentes[index] = self.usuario_atual
 
     """ Consultores """
-    def req_avanco_etapa(self):
+    def req_avanco_etapa(self): # Função para requisitar o avanço de etapa em um determinado projeto
         list = []
         for i in self.usuario_atual.projetos:
             list.append(i.nome)
@@ -321,7 +321,7 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
 
-    def req_retirada_projeto(self):
+    def req_retirada_projeto(self): # Função para requisitar a saída de um projeto
         list = []
         for i in self.usuario_atual.projetos:
             list.append(i.nome)
@@ -346,7 +346,7 @@ class Sistema:
             print('\nEntrada inválida\n')
 
     """ Gerentes """
-    def gerenciar_pedidos_avanco(self):
+    def gerenciar_pedidos_avanco(self): # Função para gerenciar os pedidos de avanço do projeto feitos pelo consultor
         list = []
         for i in self.usuario_atual.req_avanco:
             list.append(i[1])
@@ -375,7 +375,7 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
 
-    def gerenciar_pedidos_retirada(self):
+    def gerenciar_pedidos_retirada(self): # Função para gerenciar os pedidos de retirada feitos pelo consultor
         list = []
         for i in self.usuario_atual.req_retirada:
             list.append(i[1])
@@ -408,7 +408,7 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
     
-    def passar_projeto(self):
+    def passar_projeto(self): # Função para passar o projeto para outro gerente
         list = []
         for i in self.usuario_atual.projetos:
             list.append(i.nome)
@@ -445,7 +445,7 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
 
-    def entregar_projeto(self):
+    def entregar_projeto(self): # Função para entregar o projeto (os projetos entregues ficam armazenados e ainda podem ser visualizados com a opção "listar")
         list = []
         for i in self.usuario_atual.projetos:
             list.append(i.nome)
@@ -485,7 +485,7 @@ class Sistema:
         else:
             print('\nEntrada inválida\n')
 
-    def gerenciar_alocacao_projetos(self):
+    def gerenciar_alocacao_projetos(self): # Gerenciar a alocação em projetos de forma manual
         e = input('Escolha o que quer fazer: Alocar um consultor a um projeto seu | Entrar em um projeto\n').replace(' ', '').lower()
         if e == 'alocarumconsultoraumprojetoseu':
             self.alocar_consultor()
@@ -494,7 +494,7 @@ class Sistema:
         else:
             print('\nEntrada inválida!\n')
 
-    def entrar_projeto(self):
+    def entrar_projeto(self): # Função para entrar em um projeto
         list = []
         for i in self.projetos:
             list.append(i.nome)
@@ -516,7 +516,7 @@ class Sistema:
             self.projetos[proj_index].nome_gerente = self.usuario_atual.nome
             print('\nEntrada no projeto feita com sucesso!\n')
 
-    def alocar_consultor(self):
+    def alocar_consultor(self): # Função para alocar um consultor em um projeto
         list = []
         for i in self.usuario_atual.projetos:
             list.append(i.nome)

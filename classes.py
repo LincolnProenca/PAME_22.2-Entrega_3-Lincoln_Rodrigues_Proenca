@@ -1,8 +1,4 @@
 Id = 0
-opcoes_basicas = 'Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Fazer Login | Sair\n'
-opcoes_comuns = 'Verificar projetos alocados | Ver nome | Alterar Nome | Ver usuário | Alterar nome de usuário | Alterar senha | Trocar usuário\n'
-opcoes_consultor = 'Requisitar Avanço de etapa | Pedir retirada do projeto\n'
-opcoes_gerente = 'Gerenciar pedidos de avanço | Gerenciar pedidos de retirada | Passar o projeto a outro gerente | Entregar um projeto | Gerenciar alocação em projetos\n'
 
 class usuario_base:
     def __init__(self,nome,user,senha):
