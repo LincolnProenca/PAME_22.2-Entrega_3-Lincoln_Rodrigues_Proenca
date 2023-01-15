@@ -1,8 +1,8 @@
 Id = 0
 opcoes_basicas = 'Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Fazer Login | Sair\n'
 opcoes_comuns = 'Verificar projetos Alocados | Ver nome | Alterar Nome | Ver usuário | Alterar nome de usuário | Alterar senha | Trocar usuário\n'
-opcoes_gerente = 'Gerenciar pedidos de avanço | Gerenciar pedidos de retirada | Passar o projeto a outro gerente | Entregar um projeto\n'
 opcoes_consultor = 'Requisitar Avanço de etapa | Pedir retirada do projeto\n'
+opcoes_gerente = 'Gerenciar pedidos de avanço | Gerenciar pedidos de retirada | Passar o projeto a outro gerente | Entregar um projeto | Gerenciar alocação em projetos\n'
 
 class usuario_base:
     def __init__(self,nome,user,senha):
@@ -45,7 +45,7 @@ class usuario_base:
         for i in range(len(list)):
             list[i] = list[i].replace(' ', '').lower()
         if p.replace(' ', '').lower() in list:
-            obj = self.projetos[list.index(p)]
+            obj = self.projetos[list.index(p.replace(' ', '').lower())]
             print(obj)
         else:
             print('Entrada inválida')
@@ -57,13 +57,13 @@ class Consultor(usuario_base):
     def __init__(self,nome,user,senha):
         super().__init__(nome,user,senha)
         self.tipo = 'Consultor'
-        pass
 
 class Gerente(usuario_base):
     def __init__(self,nome,user,senha):
         super().__init__(nome,user,senha)
         self.tipo = 'Gerente'
-        pass
+        self.req_avanco = []
+        self.req_retirada = []
 
 class Projeto:
     def __init__(self,nome, coord,etapa:int,consultor,gerente):
@@ -72,6 +72,13 @@ class Projeto:
         self.etapa = etapa #15 total
         self.nome_consultor = consultor
         self.nome_gerente = gerente
+        global Id
+        self.__id = Id # Garantindo ID unico
+        Id += 1
+
+    @property
+    def id(self):
+        return self.__id
 
     def __str__(self): # Customizando a string da classe para fazer um print detalhado na lista
         return f'''

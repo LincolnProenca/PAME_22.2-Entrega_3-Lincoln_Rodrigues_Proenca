@@ -1,5 +1,10 @@
 from classes import *
 
+""" 
+Fazer sistema de quando criar um projeto procurar pelo nome do gerente/consultor associado e ja alocar direto
+criar sistema de alocação manual nos projetos(somente pra gerente)
+ """
+
 class Sistema:
     def __init__(self):
         self.gerentes = []  # Lista com todos os gerentes criados
@@ -18,8 +23,18 @@ class Sistema:
         cst_proj = input('Insira o nome do consultor do projeto: ')
         grt_proj = input('Insira o nome do gerente do projeto: ')
         proj = Projeto(nome_proj, coor_proj, etp_proj,cst_proj,grt_proj)
+        """ Associando projetos a gerente e consultor """
+        for i in self.consultores:
+            if i.nome.replace(' ', '').lower() == cst_proj.replace(' ', '').lower():
+                i.projetos.append(proj)
+                proj.nome_consultor = i.nome
+        for i in self.gerentes:
+            if i.nome.replace(' ', '').lower() == grt_proj.replace(' ', '').lower():
+                i.projetos.append(proj)
+                proj.nome_gerente = i.nome
+        """ Adicionando projeto ao sistema """
         self.projetos.append(proj)
-    
+        
     def removerprojetos(self):
         list = []
         for i in self.projetos:
@@ -28,8 +43,9 @@ class Sistema:
         for i in range(len(list)):
             list[i] = list[i].replace(' ', '').lower()
         if p.replace(' ', '').lower() in list:
-            print(f'Removido {self.projetos[list.index(p)].nome}')
-            self.projetos.pop(list.index(p))
+            nome = self.projetos[list.index(p.replace(' ', '').lower())].nome
+            print(f'Removido {nome}')
+            self.projetos.pop(list.index(p.replace(' ', '').lower()))
             
         else:
             print('Entrada inválida')
@@ -64,8 +80,9 @@ class Sistema:
         for i in range(len(list)):
             list[i] = list[i].replace(' ', '').lower()
         if p.replace(' ', '').lower() in list:
-            print(f'Removido {self.consultores[list.index(p)].nome}')
-            self.consultores.pop(list.index(p))
+            nome = self.consultores[list.index(p.replace(' ', '').lower())].nome
+            print(f'Removido {nome}')
+            self.consultores.pop(list.index(p.replace(' ', '').lower()))
         else:
             print('Entrada inválida')
 
@@ -89,8 +106,12 @@ class Sistema:
         for i in range(len(list)):
             list[i] = list[i].replace(' ', '').lower()
         if p.replace(' ', '').lower() in list:
-            print(f'Removido {self.gerentes[list.index(p)].nome}')
-            self.gerentes.pop(list.index(p))
+            if self.gerentes[list.index(p.replace(' ', '').lower())].projetos == []:
+                nome = self.gerentes[list.index(p.replace(' ', '').lower())].nome
+                print(f'Removido {nome}')
+                self.gerentes.pop(list.index(p.replace(' ', '').lower()))
+            else:
+                print('Esse gerente ainda possui projetos e não pode ser excluído')
         else:
             print('Entrada inválida')
 
@@ -105,7 +126,7 @@ class Sistema:
                 for i in range(len(list)):
                     list[i] = list[i].replace(' ', '').lower()
                 if p.replace(' ', '').lower() in list:  
-                    obj = self.gerentes[list.index(p)]
+                    obj = self.gerentes[list.index(p.replace(' ', '').lower())]
                     print(obj)
                 else:
                     print('Entrada inválida')
@@ -118,7 +139,7 @@ class Sistema:
                 for i in range(len(list)):
                     list[i] = list[i].replace(' ', '').lower()
                 if p.replace(' ', '').lower() in list:  
-                    obj = self.consultores[list.index(p)]
+                    obj = self.consultores[list.index(p.replace(' ', '').lower())]
                     print(obj)
                 else:
                     print('Entrada inválida')
@@ -131,7 +152,7 @@ class Sistema:
                 for i in range(len(list)):
                     list[i] = list[i].replace(' ', '').lower()
                 if p.replace(' ', '').lower() in list:
-                    obj = self.projetos[list.index(p)]
+                    obj = self.projetos[list.index(p.replace(' ', '').lower())]
                     print(obj)
                 else:
                     print('Entrada inválida')
@@ -226,13 +247,130 @@ class Sistema:
             self.consultores[index] = self.usuario_atual
         elif self.usuario_atual.tipo == 'Gerente':
             self.gerentes[index] = self.usuario_atual
+
+    """ Consultores """
+    def req_avanco_etapa(self):
+        list = []
+        for i in self.usuario_atual.projetos:
+            list.append(i.nome)
+        p = input(f'Escolha o projeto que quer avançar: {" | ".join(list)}\n')
+        for i in range(len(list)):
+            list[i] = list[i].replace(' ', '').lower()
+        if p.replace(' ', '').lower() in list:
+            proj =self.usuario_atual.projetos[list.index(p.replace(' ', '').lower())]
+            req = [f"""
+            Requisição de avanço para o projeto: {proj.nome}
+            Feita pelo consultor: {self.usuario_atual.nome}\n
+            """,proj.nome]
+            for i in self.gerentes:
+                if i.nome.replace(' ', '').lower() == proj.nome_gerente.replace(' ', '').lower():
+                    i.req_avanco.append(req)
+                    print('Requisição feita!\n')
+                elif i == self.gerentes[len(self.gerentes)-1]:
+                    print('Gerente não encontrado!\n')
+        else:
+            print('Entrada inválida')
+
+    def req_retirada_projeto(self):
+        list = []
+        for i in self.usuario_atual.projetos:
+            list.append(i.nome)
+        p = input(f'Escolha o projeto quer pedir retirada: {" | ".join(list)}\n')
+        for i in range(len(list)):
+            list[i] = list[i].replace(' ', '').lower()
+        if p.replace(' ', '').lower() in list:
+            proj =self.usuario_atual.projetos[list.index(p.replace(' ', '').lower())]
+            req = [f"""
+            Requisição de retirada do projeto: {proj.nome}
+            Feita pelo consultor: {self.usuario_atual.nome}\n
+            """,proj.nome,self.usuario_atual.id,self.usuario_atual.projetos.index(proj)]   
+            for i in self.gerentes:
+                if i.nome.replace(' ', '').lower() == proj.nome_gerente.replace(' ', '').lower():
+                    i.req_retirada.append(req)
+                    print('Requisição feita!\n')
+                elif i == self.gerentes[len(self.gerentes)-1]:
+                    print('Gerente não encontrado!\n')
+        else:
+            print('Entrada inválida')
+
+    """ Gerentes """
+    def gerenciar_pedidos_avanco(self):
+        list = []
+        for i in self.usuario_atual.req_avanco:
+            list.append(i[1])
+        if list == []:
+            print(f'Escolha qual requisição quer visualizar: Nenhuma requisição encontrada\n')
+            return
+        p = input(f'Escolha qual requisição quer visualizar: {" | ".join(list)}\n')
+        for i in range(len(list)):
+            list[i] = list[i].replace(' ', '').lower()
+        if p.replace(' ', '').lower() in list:
+            print(self.usuario_atual.req_avanco[list.index(p.replace(' ', '').lower())][0])
+            e = input('O que deseja fazer com a requisição: Aceitar | Recusar\n')
+            if e.replace(' ', '').lower() == 'aceitar':
+                lista = []
+                for i in self.projetos:
+                    lista.append(i.nome.replace(' ', '').lower())
+                index = lista.index(list[list.index(p.replace(' ', '').lower())])
+                self.projetos[index].etapa += 1
+                print('Etapa do projeto avançada!\n')
+            elif e.replace(' ', '').lower() == 'recusar':
+                print('Requisição recusada!\n')
+            else:
+                print('Escolha inválida! Tente novamente.')
+                return
+            self.usuario_atual.req_avanco.pop(list.index(p.replace(' ', '').lower()))
+        else:
+            print('Entrada inválida')
+
+    def gerenciar_pedidos_retirada(self):
+        list = [] #LISTA DE PROJETOS ALOCADOS
+        for i in self.usuario_atual.req_retirada:
+            list.append(i[1])
+        if list == []:
+            print(f'Escolha qual requisição quer visualizar: Nenhuma requisição encontrada\n')
+            return
+        p = input(f'Escolha qual requisição quer visualizar: {" | ".join(list)}\n')
+        for i in range(len(list)):
+            list[i] = list[i].replace(' ', '').lower()
+        if p.replace(' ', '').lower() in list:
+            print(self.usuario_atual.req_retirada[list.index(p.replace(' ', '').lower())][0])
+            e = input('O que deseja fazer com a requisição: Aceitar | Recusar\n')
+            if e.replace(' ', '').lower() == 'aceitar':
+                lista = [] #LISTA DE PROJETOS GERAIS
+                for i in self.projetos:
+                    lista.append(i.nome.replace(' ', '').lower())
+                index = lista.index(list[list.index(p.replace(' ', '').lower())])
+                for i in self.consultores:
+                    if i.id == self.usuario_atual.req_retirada[index][2]:
+                        consultor = i
+                self.consultores[self.consultores.index(consultor)].projetos.pop(self.usuario_atual.req_retirada[index][3])
+                self.projetos[index].nome_consultor = ''
+                print('Consultor retirado do projeto!\n')
+            elif e.replace(' ', '').lower() == 'recusar':
+                print('Requisição recusada!\n')
+            else:
+                print('Escolha inválida! Tente novamente.')
+                return
+            self.usuario_atual.req_retirada.pop(list.index(p.replace(' ', '').lower()))
+        else:
+            print('Entrada inválida')
+    
+    def passar_projeto(self):
+        pass
+
+    def entregar_projeto(self):
+        pass
+
+    def gerenciar_alocacao_projetos(self):
+        pass
         
-
-
 """ Código principal """
 
 def main():
     sis = Sistema()
+    sis.gerentes.append(Gerente('Pedro Loss','pedro','123'))
+    sis.consultores.append(Consultor('Rogerio Ceni','roger','123'))
     sis.welcome()
     escolha = ''
     while escolha.replace(' ', '').lower() != 'sair':
@@ -277,18 +415,18 @@ def main():
                 sis.alterar_senha_usuario()
             case ['trocarusuario' | 'trocarusuário', True]:
                 sis.trocar_usuario()
-            case ['gerenciarpedidosdeavanço', True]:
-                pass
+            case ['gerenciarpedidosdeavanço' | 'gerenciarpedidosdeavanco', True]:
+                sis.gerenciar_pedidos_avanco()
             case ['gerenciarpedidosderetirada', True]:
-                pass
+                sis.gerenciar_pedidos_retirada()
             case ['passaroprojetoaoutrogerente', True]:
                 pass
             case ['entregarumprojeto', True]:
                 pass
-            case ['requisitaravançodeetapa', True]:
-                pass
+            case ['requisitaravançodeetapa' | 'requisitaravancodeetapa', True]:
+                sis.req_avanco_etapa()
             case ['pedirretiradadoprojeto', True]:
-                pass
+                sis.req_retirada_projeto()
             case ['sair', False | True]:
                 escolha = 'sair'
                 print('Adeus!')
