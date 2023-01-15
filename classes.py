@@ -1,6 +1,6 @@
-idG = 0
-idC = 0
-print('teste')
+idg = 0
+idc = 0
+opcoes_basicas = 'Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Fazer Login | Sair\n'
 opcoes_comuns = 'Verificar projetos | Ver nome | Alterar Nome | Ver usuário | Alterar usuário | Alterar senha\n'
 opcoes_gerente = 'Gerenciar pedidos de avanço | Gerenciar pedidos de retirada | Passar o projeto a outro gerente | Entregar um projeto\n'
 opcoes_consultor = 'Requisitar Avanço de etapa | Pedir retirada do projeto\n'
@@ -11,13 +11,7 @@ class usuario_base:
         self.__usuario = user
         self.__senha = senha
         self.projetos = [] #projetos alocados
-
-    @property
-    def nome(self):
-        return self.nome
-    @nome.setter
-    def nome(self,n):
-        self.nome = n
+        self.tipo = None
 
     @property
     def usuario(self):
@@ -38,17 +32,19 @@ class usuario_base:
 
 class Consultor(usuario_base):
     def __init__(self,nome,user,senha):
-        super.__init__(nome,user,senha)
-        self.id = idC #garantindo id unico
+        super().__init__(nome,user,senha)
+        global idc
+        self.id = idc #garantindo id unico
         idc += 1
         self.tipo = 'Consultor'
         pass
 
 class Gerente(usuario_base):
     def __init__(self,nome,user,senha):
-        super.__init__(nome,user,senha)
-        self.id = idG #garantindo id unico
-        idc += 1
+        super().__init__(nome,user,senha)
+        global idg
+        self.id = idg #garantindo id unico
+        idg += 1
         self.tipo = 'Gerente'
         pass
 
