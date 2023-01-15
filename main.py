@@ -47,6 +47,11 @@ class Sistema:
     def criar_consultor(self):
         nome_con = input('Insira o nome do consultor: ')
         user_con = input('Insira o usuário de login: ')
+        lista = self.consultores + self.gerentes
+        for i in lista:
+            if i.nome.replace(' ', '').lower() == user_con.replace(' ', '').lower():
+                print('Nome de usuário já utilizado, tente outro!\n')
+                return
         senha = self.definir_senha()
         con = Consultor(nome_con, user_con,senha)
         self.consultores.append(con)
@@ -67,6 +72,11 @@ class Sistema:
     def criar_gerente(self):
         nome_ger = input('Insira o nome do gerente: ')
         user_ger = input('Insira o usuário de login: ')
+        lista = self.consultores + self.gerentes
+        for i in lista:
+            if i.nome.replace(' ', '').lower() == user_ger.replace(' ', '').lower():
+                print('Nome de usuário já utilizado, tente outro!\n')
+                return
         senha = self.definir_senha()
         ger = Gerente(nome_ger, user_ger,senha)
         self.gerentes.append(ger)
@@ -87,7 +97,7 @@ class Sistema:
     def listar(self):
         resp = input('O que você deseja listar?\n Gerentes | Consultores | Projetos\n')
         match resp.lower().strip():
-            case ['gerentes', True]:
+            case 'gerentes':
                 list = []
                 for i in self.gerentes:
                     list.append(i.nome)
@@ -100,7 +110,7 @@ class Sistema:
                 else:
                     print('Entrada inválida')
 
-            case ['consultores', True]:
+            case 'consultores':
                 list = []
                 for i in self.consultores:
                     list.append(i.nome)
@@ -113,7 +123,7 @@ class Sistema:
                 else:
                     print('Entrada inválida')
 
-            case ['projetos', True]:
+            case 'projetos':
                 list = []
                 for i in self.projetos:
                     list.append(i.nome)
@@ -133,12 +143,19 @@ class Sistema:
         """ procurar na lista pelo nome do usuário e ver se a senha bate """
         """ após isso alocar em uma variável(self.usurario_atual) o objeto e liberar as opções novas para consultor e gerente"""
         c = input('Escolha como quer logar: Consultor | Gerente\n')
-        user = input('Insira o nome de usuário: ')
-        senha = input('Insira a senha de usuário: ')
         if c.lower() == 'consultor':
             lista = self.consultores
-        if c.lower() == 'gerente':
+        elif c.lower() == 'gerente':
             lista = self.gerentes
+        else:
+            print('Escolha de tipo de login inválida')
+            return
+        if lista == []:
+            print('Nenhum usuário encontrado')
+            return
+        user = input('Insira o nome de usuário: ')
+        senha = input('Insira a senha de usuário: ')
+        
         for i in lista:
             if i.usuario == user and i.senha == senha:
                 self.usuario_atual = i
@@ -147,24 +164,78 @@ class Sistema:
             elif i == lista[len(lista)-1]:
                 print('Usuário ou senha invalido!\n')
 
-
     """ Funções para usuário logado """
     """ Gerais """
-    def ver_dados(self):
-        pass
+    def ver_usuario(self):
+        list = []
+        for i in self.usuario_atual.projetos:
+            list.append(i.nome)
+        if list == []:
+            list = 'Nenhum projeto alocado'
+        else:
+            list = " | ".join(list)
+        print(f'''
+        Nome: {self.usuario_atual.nome}
+        Usuário: {self.usuario_atual.usuario}
+        Senha: {self.usuario_atual.senha}
+        Projetos: {list}
+        Cargo : {self.usuario_atual.tipo}
+        Id: {self.usuario_atual.id}
+        ''')    
 
-    def modificar_dados(self):
-        pass
+    def alterar_nome_usuario(self):
+        nome = input('Insira o novo nome: ')
+        self.usuario_atual.nome = nome
+        self.update_usuario()
 
-    def ver_proj_alocados(self):
-        pass
+    def alterar_nome_usuario_login(self):
+        nome = input('Insira o novo nome de usuário: ')
+        lista = self.consultores + self.gerentes
+        for i in lista:
+            if i.id == self.usuario_atual.id:
+                lista.pop(lista.index(i))
+        for i in lista:
+            if i.nome.replace(' ', '').lower() == nome.replace(' ', '').lower():
+                print('Nome de usuário já utilizado, tente outro!\n')
+                return
+        self.usuario_atual.nome = nome
+        self.update_usuario()
 
+    def alterar_senha_usuario(self):
+        senha = input('Insira a nova senha: ')
+        self.usuario_atual.senha = senha
+        self.update_usuario()
+
+    def trocar_usuario(self):
+        print('Logout efetuado!\n')
+        self.update_usuario()
+        self.usuario_atual = usuario_base('None','None','None')
+        self.logar()
+
+    def update_usuario(self):
+        list = []
+        lista = []
+        if self.usuario_atual.tipo == 'Consultor':
+            lista = self.consultores
+        elif self.usuario_atual.tipo == 'Gerente':
+            lista = self.gerentes
+        for i in lista:
+            list.append(i.id)
+        index = list.index(self.usuario_atual.id)
+        if self.usuario_atual.tipo == 'Consultor':
+            self.consultores[index] = self.usuario_atual
+        elif self.usuario_atual.tipo == 'Gerente':
+            self.gerentes[index] = self.usuario_atual
+        
+
+
+""" Código principal """
 
 def main():
     sis = Sistema()
     sis.welcome()
     escolha = ''
-    while escolha.lower().strip() != 'sair':
+    while escolha.replace(' ', '').lower() != 'sair':
         if sis.usuario_atual.tipo == 'Consultor':
             logado = True
             escolha = input(opcoes_basicas + opcoes_comuns + opcoes_consultor)
@@ -192,18 +263,20 @@ def main():
                 sis.logar()
             case ['listar', False | True]:
                 sis.listar()
-            case ['verificarprojetos', True]:
-                pass
+            case ['verificarprojetosalocados', True]:
+                sis.usuario_atual.ver_projetos_alocados()
             case ['vernome', True]:
-                pass
+                sis.usuario_atual.ver_nome()
             case ['alterarnome', True]:
-                pass
+                sis.alterar_nome_usuario()
             case ['verusuario' | 'verusuário', True]:
-                pass
-            case ['alterarusuario' | 'alterarusuário', True]:
-                pass
+                sis.ver_usuario()
+            case ['alterarnomedeusuario' | 'alterarnomedeusuário', True]:
+                sis.alterar_nome_usuario_login()
             case ['alterarsenha', True]:
-                pass
+                sis.alterar_senha_usuario()
+            case ['trocarusuario' | 'trocarusuário', True]:
+                sis.trocar_usuario()
             case ['gerenciarpedidosdeavanço', True]:
                 pass
             case ['gerenciarpedidosderetirada', True]:

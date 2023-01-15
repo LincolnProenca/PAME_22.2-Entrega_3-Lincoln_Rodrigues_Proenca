@@ -1,7 +1,6 @@
-idg = 0
-idc = 0
+Id = 0
 opcoes_basicas = 'Escolha o que quer fazer: Criar projeto | Remover Projeto | Criar Consultor | Remover Consultor | Criar Gerente | Remover Gerente | Listar | Fazer Login | Sair\n'
-opcoes_comuns = 'Verificar projetos | Ver nome | Alterar Nome | Ver usuário | Alterar usuário | Alterar senha\n'
+opcoes_comuns = 'Verificar projetos Alocados | Ver nome | Alterar Nome | Ver usuário | Alterar nome de usuário | Alterar senha | Trocar usuário\n'
 opcoes_gerente = 'Gerenciar pedidos de avanço | Gerenciar pedidos de retirada | Passar o projeto a outro gerente | Entregar um projeto\n'
 opcoes_consultor = 'Requisitar Avanço de etapa | Pedir retirada do projeto\n'
 
@@ -10,6 +9,9 @@ class usuario_base:
         self.nome = nome
         self.__usuario = user
         self.__senha = senha
+        global Id
+        self.__id = Id # Garantindo ID unico
+        Id += 1
         self.projetos = [] #projetos alocados
         self.tipo = None
 
@@ -21,30 +23,45 @@ class usuario_base:
         self.__usuario = user
 
     @property
+    def id(self):
+        return self.__id
+
+    @property
     def senha(self):
         return self.__senha
     @senha.setter
     def senha(self,senha):
         self.__senha = senha
 
-    def ver_projetos(self):
-        pass
+    def ver_projetos_alocados(self):
+        list = []
+        for i in self.projetos:
+            list.append(i.nome)
+        if list == []:
+            print('\nVocê está alocado nos seguintes projetos, escolha o que quer ver: Nenhum projeto alocado\n')
+            return
+        else:
+            p = input(f'Você está alocado nos seguintes projetos, escolha o que quer ver: {" | ".join(list)}\n')
+        for i in range(len(list)):
+            list[i] = list[i].replace(' ', '').lower()
+        if p.replace(' ', '').lower() in list:
+            obj = self.projetos[list.index(p)]
+            print(obj)
+        else:
+            print('Entrada inválida')
+
+    def ver_nome(self):
+        print(f'\nNome: {self.nome}\n')
 
 class Consultor(usuario_base):
     def __init__(self,nome,user,senha):
         super().__init__(nome,user,senha)
-        global idc
-        self.id = idc #garantindo id unico
-        idc += 1
         self.tipo = 'Consultor'
         pass
 
 class Gerente(usuario_base):
     def __init__(self,nome,user,senha):
         super().__init__(nome,user,senha)
-        global idg
-        self.id = idg #garantindo id unico
-        idg += 1
         self.tipo = 'Gerente'
         pass
 
