@@ -24,6 +24,10 @@ class Sistema:
         grt_proj = input('Insira o nome do gerente do projeto: ')
         proj = Projeto(nome_proj, coor_proj, etp_proj,'','')
         """ Associando projetos a gerente e consultor """
+        if self.consultores == []:
+            print('\nConsultor não encontrado! Entre como o gerente do projeto para alocar um consultor\n')
+        if self.gerentes == []:
+            print('\nGerente não encontrado! Entre como um gerente para alocar-se ao projeto\n')
         for i in self.consultores:
             if i.nome.replace(' ', '').lower() == cst_proj.replace(' ', '').lower():
                 i.projetos.append(proj)
@@ -31,6 +35,7 @@ class Sistema:
                 break
             elif i == self.consultores[len(self.consultores)-1]:
                 print('\nConsultor não encontrado! Entre como o gerente do projeto para alocar um consultor\n')
+
         for i in self.gerentes:
             if i.nome.replace(' ', '').lower() == grt_proj.replace(' ', '').lower():
                 i.projetos.append(proj)
@@ -147,7 +152,6 @@ class Sistema:
                     Nome: {obj.nome}
                     Projetos: {lista}
                     Cargo : {obj.tipo}
-                    Id: {obj.id}
                     ''')
                 else:
                     print('\nEntrada inválida\n')
@@ -175,7 +179,6 @@ class Sistema:
                     Nome: {obj.nome}
                     Projetos: {lista}
                     Cargo : {obj.tipo}
-                    Id: {obj.id}
                     ''')
                 else:
                     print('\nEntrada inválida\n')

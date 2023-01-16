@@ -16,9 +16,9 @@ def main():
     sis = Sistema() #Iniciando o sistema
 
     """ Usuários base para teste """
-    sis.gerentes.append(Gerente('Pedro Loss','pedro','123'))
+    """sis.gerentes.append(Gerente('Pedro Loss','pedro','123'))
     sis.consultores.append(Consultor('Rogerio Ceni','roger','123'))
-    sis.gerentes.append(Gerente('Rebecca','reb','123'))
+    sis.gerentes.append(Gerente('Rebecca','reb','123')) """
 
     sis.welcome()
     escolha = ''
