@@ -45,6 +45,7 @@ class Sistema:
                 print('\nGerente não encontrado! Entre como um gerente para alocar-se ao projeto\n')
         """ Adicionando projeto ao sistema """
         self.projetos.append(proj)
+        print('\nProjeto Criado!\n')
         
     def removerprojetos(self):
         list = []
